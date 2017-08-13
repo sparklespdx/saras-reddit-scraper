@@ -132,6 +132,9 @@ def excel_writer(filename, scraped_submission):
 
 ### views
 
+app.add_url_rule('/favicon.ico',
+                 redirect_to=url_for('static', filename='favicon.ico'))
+
 @app.route('/')
 def index():
     return render_template('index.html')
