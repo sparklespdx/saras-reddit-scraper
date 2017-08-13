@@ -86,7 +86,6 @@ class ScrapedComment:
 
         self.body = self.c.body
         self.upvotes = str(self.c.ups)
-        self.downvotes = str(self.c.downs)
 
         self.created_at = datetime.fromtimestamp(int(self.c.created_utc)).strftime('%Y-%m-%d %H:%M:%S UTC')
         self.permalink = "https://www.reddit.com" + self.c.permalink(fast=True)
@@ -118,9 +117,9 @@ def excel_writer(filename, scraped_submission):
 
     # Write comments data
 
-    comment_data.append(['Date Posted', 'Reddit User', 'Upvotes', 'Downvotes', 'Link', 'Comment Body'])
+    comment_data.append(['Date Posted', 'Reddit User', 'Upvotes', 'Link', 'Comment Body'])
     for c in comments:
-        comment_data.append([c.created_at, c.username, c.upvotes, c.downvotes, c.permalink, c.body])
+        comment_data.append([c.created_at, c.username, c.upvotes, c.permalink, c.body])
 
     # set column width, text wrapping
     for ws in post_metadata, comment_data:
