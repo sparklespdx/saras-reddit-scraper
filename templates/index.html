@@ -8,15 +8,26 @@
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
   </head>
+
+
   <body>
 
-  <h1>Scraping is Super Great</h1>
+    <div class="jumbotron">
 
-  <form id="submit-subreddit-url" action="{{ url_for('scrape_submission_and_send') }}" method="POST", class="scrape_submission_and_send">
-      <dt><strong>Link to Reddit Post:</strong><br></dt>
-      <dd><input type="text" size="80" name="rawurl" value="rawurl"></dd>
-      <dd><input type=submit value=Submit></dd>
-  </form>
+        <h2 class="display-3">Scraping Is Super Great</h2>
+
+        <br>
+        <br>
+
+        <form id="submit-subreddit-url" action="{{ url_for('scrape_submission_and_send') }}" method="POST", class="scrape_submission_and_send">
+            <dl>
+            <h4><strong>Link to Reddit Post:</strong></h4><br>
+            <dd><input type="text" size="80" name="rawurl" value="https://www.reddit.com/r/ChildrenFallingOver/comments/6tfvvv/if_you_go_i_go/">
+            <br>
+            <dd><input type=submit value="Gimmie Da Sprudsheetz">
+            </dl>
+        </form>
+      </div>
 
   </body>
 </html>
