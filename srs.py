@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, after_this_request, render_template, request
+from flask import Flask, send_from_directory, after_this_request, render_template, request, url_for
 import praw
 from datetime import datetime
 from openpyxl import Workbook, styles
@@ -132,8 +132,10 @@ def excel_writer(filename, scraped_submission):
 
 ### views
 
-app.add_url_rule('/favicon.ico',
-                 redirect_to=url_for('static', filename='favicon.ico'))
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static/favicon'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/')
 def index():
@@ -157,4 +159,10 @@ def scrape_submission_and_send():
 
 
 if __name__ == '__main__':
-    app.run(port=os.environ.get('PORT'), host='0.0.0.0', debug=False)
+    if os.environ.get('PORT'):
+        host = '0.0.0.0'
+        debug = False
+    else:
+        host = '127.0.0.1'
+        debug = True
+    app.run(port=os.environ.get('PORT'), host=host, debug=debug)
