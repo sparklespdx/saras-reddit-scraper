@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sara's Super Awesome Reddit Scraper</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- stylesheets -->
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+  </head>
+  <body>
+
+  <h1>Scraping is Super Great</h1>
+
+  <form id="submit-subreddit-url" action="{{ url_for('scrape_submission_and_send') }}" method="POST", class="scrape_submission_and_send">
+      <dt><strong>Link to Reddit Post:</strong><br></dt>
+      <dd><input type="text" size="80" name="rawurl" value="rawurl"></dd>
+      <dd><input type=submit value=Submit></dd>
+  </form>
+
+  </body>
+</html>
