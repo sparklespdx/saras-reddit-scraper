@@ -10,3 +10,5 @@ functionality for Reddit comments, with the added bonus of outputting nicely for
 The service and frontend were completed in a day; I wanted to demostrate the Power Of Python and open the door
 to questions about how programming can solve all you problems, if your problems are scraping Reddit comments and
 processing the data.
+
+Deployed to: https://still-wildwood-20500.herokuapp.com/
