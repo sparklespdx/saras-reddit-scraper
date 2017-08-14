@@ -25,18 +25,30 @@ def parse_rawurl(url):
     return id
 
 
-def normalize_spreadsheet(ws):
+def format_spreadsheet(ws):
+
+    # freeze top row
+    ws.freeze_panes = ws['A2']
+
+    # set top row to bold
+    # we can't address the whole row at once, gotta do cells.
+    # not going to bother with a content checker
+    top_row = [ws['A1'], ws['B1'], ws['C1'], ws['D1'], ws['E1']]
+    for r in top_row:
+        r.font = styles.Font(bold=True)
+
     dims = {}
-    al = styles.Alignment(wrap_text=True)
     for row in ws.rows:
         for cell in row:
-            if len(cell.value) < 100:
-                cell_length = len(cell.value) + 1
-            else:
-                cell_length = 100
+            # set length of cells to length of content, with 100 char limit.
             if cell.value:
+                if len(cell.value) < 100:
+                    cell_length = len(cell.value) + 1
+                else:
+                    cell_length = 100
                 dims[cell.column] = max((dims.get(cell.column, 0), cell_length))
-                cell.alignment = al
+                # Set alignment to wrap text, this preserves newlines.
+                cell.alignment = styles.Alignment(wrap_text=True)
     for col, value in dims.items():
         ws.column_dimensions[col].width = value
     return ws
@@ -110,9 +122,10 @@ class ScrapedComment:
 
 def excel_writer(filename, scraped_submission):
 
-    # Nice names.
     ss = scraped_submission
-    comments = ss.comments
+
+    # Sort comments by date
+    comments = sorted(ss.comments, key=lambda comment: comment.created_at)
 
     # Intialize workbook in memory
     wb = Workbook()
@@ -136,7 +149,7 @@ def excel_writer(filename, scraped_submission):
 
     # set column width, text wrapping
     for ws in post_metadata, comment_data:
-        normalize_spreadsheet(ws)
+        format_spreadsheet(ws)
 
     # Write file
     wb.save(filename)
