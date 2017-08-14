@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, after_this_request, render_template, request, url_for
+from flask import Flask, send_from_directory, after_this_request, render_template, request
 import praw
 from datetime import datetime
 from openpyxl import Workbook, styles
@@ -17,8 +17,7 @@ r = praw.Reddit(client_id='ilj-O4lJ0G9YyQ',
                 user_agent='PRAW/Python3.6.1')
 
 
-## Helpers
-
+# Helpers
 
 def parse_rawurl(url):
     path = urlparse(url).path.split('/')
@@ -43,26 +42,34 @@ def normalize_spreadsheet(ws):
     return ws
 
 
-## The Guts
-
+# Data Scraping / Normalization Interfaces
 
 class ScrapedSubmission:
 
+    # Submission object fields are fetched from API when they are addressed/called.
     def __init__(self, r, submission_id):
 
         self.post = r.submission(id=submission_id)
 
         self.title = self.post.title
-        self.author = self.post.author.name
         self.upvotes = str(self.post.ups)
         self.downvotes = str(self.post.downs)
         self.sub = self.post.subreddit.display_name
         self.selftext = self.post.selftext
         self.url = self.post.url
 
-        self.created_at = datetime.fromtimestamp(int(self.post.created_utc)).strftime('%Y-%m-%d %H:%M:%S UTC')
+        self.created_at = datetime.fromtimestamp(
+            int(self.post.created_utc)
+        ).strftime('%Y-%m-%d %H:%M:%S UTC')
+
         self.post_url = 'https://www.reddit.com' + self.post.permalink
 
+        if self.post.author:
+            self.author = self.post.author.name
+        else:
+            self.author = '[deleted]'
+
+        # We don't need to wait around, lets just get them now.
         self.comments = self._get_comments()
 
     def _get_comments(self):
@@ -70,6 +77,8 @@ class ScrapedSubmission:
         scraped = []
 
         comments = self.post.comments
+
+        # expand MoreComments objects
         comments.replace_more()
 
         for comment in comments.list():
@@ -87,7 +96,10 @@ class ScrapedComment:
         self.body = self.c.body
         self.upvotes = str(self.c.ups)
 
-        self.created_at = datetime.fromtimestamp(int(self.c.created_utc)).strftime('%Y-%m-%d %H:%M:%S UTC')
+        self.created_at = datetime.fromtimestamp(
+            int(self.c.created_utc)
+        ).strftime('%Y-%m-%d %H:%M:%S UTC')
+
         self.permalink = "https://www.reddit.com" + self.c.permalink(fast=True)
 
         if hasattr(self.c.author, 'name'):
@@ -97,16 +109,18 @@ class ScrapedComment:
 
 
 def excel_writer(filename, scraped_submission):
+
+    # Nice names.
     ss = scraped_submission
     comments = ss.comments
 
+    # Intialize workbook in memory
     wb = Workbook()
     comment_data = wb.active
     comment_data.title = 'Comment Data'
     post_metadata = wb.create_sheet(title='Post Metadata')
 
     # Write metadata
-
     post_metadata.append(['Attribute', 'Data'])
     post_metadata.append(['Post Title', ss.title])
     post_metadata.append(['Post Author', ss.author])
@@ -116,7 +130,6 @@ def excel_writer(filename, scraped_submission):
     post_metadata.append(['Link to Post', ss.post_url])
 
     # Write comments data
-
     comment_data.append(['Date Posted', 'Reddit User', 'Upvotes', 'Link', 'Comment Body'])
     for c in comments:
         comment_data.append([c.created_at, c.username, c.upvotes, c.permalink, c.body])
