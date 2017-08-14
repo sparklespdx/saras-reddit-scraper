@@ -24,6 +24,21 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/static/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
+
+      <style>
+          body {
+              background-color: black;
+          }
+          .jumbotron {
+              background-color: black;
+          }
+          h1 {
+              color: greenyellow;
+          }
+          h4 {
+              color: aqua;
+          }
+      </style>
   </head>
 
 
@@ -31,16 +46,15 @@
 
     <div class="jumbotron">
 
-        <h2 class="display-3">Scraping Is Super Great</h2>
+        <h1 class="display-3">Scraping Is Super Great</h1>
         <br>
         <img src="static/tenor.gif">
 
         <br>
         <br>
-
         <form id="submit-subreddit-url" action="{{ url_for('scrape_submission_and_send') }}" method="POST", class="scrape_submission_and_send">
             <dl>
-            <h4><strong>Link to Reddit Post:</strong></h4><br><br>
+            <h4><strong>Paste a link to a reddit post to get a comment dump in xlsx format:</strong></h4>
             <dd><input type="text" size="80" name="rawurl" value="https://www.reddit.com/r/ChildrenFallingOver/comments/6tfvvv/if_you_go_i_go/">
             <br>
             <dd><input type=submit value="Gimmie Da Sprudsheetz">
