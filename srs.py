@@ -12,9 +12,9 @@ app = Flask(__name__)
 #       * Because you can totally just build
 #         a thing in a day that does what you want.
 
-r = praw.Reddit(client_id='ilj-O4lJ0G9YyQ',
-                client_secret='Kw9aueL0l3fvyrIkCBUDbv6ydo4',
-                user_agent='PRAW/Python3.6.1')
+r = praw.Reddit(client_id=os.environ.get('PRAW_CLIENT_ID'),
+                client_secret=os.environ.get('PRAW_CLIENT_SECRET'),
+                user_agent='PRAW/Python 3.6.2')
 
 
 # Helpers
@@ -100,7 +100,7 @@ class ScrapedComment:
             int(self.c.created_utc)
         ).strftime('%Y-%m-%d %H:%M:%S UTC')
 
-        self.permalink = "https://www.reddit.com" + self.c.permalink(fast=True)
+        self.permalink = "https://www.reddit.com" +  self.c.permalink(fast=True)
 
         if hasattr(self.c.author, 'name'):
             self.username = self.c.author.name
